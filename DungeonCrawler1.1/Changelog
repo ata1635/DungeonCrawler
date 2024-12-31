@@ -1,0 +1,7 @@
+- Die Gameplayschleife wurde in eine eigene Methode (DungeonCrawler/startGame) geschrieben.
+
+    - GameLogic.clearConsole(); wird nun vor dem Ausgeben des Titels aufgerufen, damit die vorherigen in das Terminal geschriebenen Sachen nicht mehr sichtbar sind.
+
+- Überflüssige Codeschnipsel und Methode (GameLogic/gameLoop) wurden entfernt.
+
+- Bei (GameLogic/readInt) ein if-statement hinzugefügt, der Fehleingaben von der Konsole behandelt.
