@@ -17,6 +17,101 @@ public class DungeonCrawler {
 		startGame(dungeonRooms);
 	}
 	
+	
+	public static int diceRoll() {
+		int dice = 1;
+		int time = 25;
+		int tries = 100;
+		
+		for(int i = 0; i < 3; i++) {
+			for(int j = 0; j < tries; j++) {
+				try {
+					dice = (int)(Math.random() * 6) + 1;
+					GameLogic.clearConsole();
+					System.out.println(dice);
+					Thread.sleep(time);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+			time = time * 5;
+			tries = tries / 5;
+		}
+		GameLogic.clearConsole();
+		return dice;
+	}
+	
+	public static void generate(DungeonRoom[][] dungeonRoom) {
+		int[] nextRoomXY = {55, 55};
+		for(dungeonIndex = 0; dungeonIndex < dungeonRoom.length; dungeonIndex++) {
+			dungeonRoom[dungeonIndex][0] = new DungeonRoom(nextRoomXY[0], nextRoomXY[1], red);
+			dungeonRoom[dungeonIndex][0].setIsNotSuitable();
+			dungeonRoom[dungeonIndex][0].draw();
+			StdDraw.show(500);
+			dungeonRoom[dungeonIndex][1] = new DungeonRoom(dungeonRoom[dungeonIndex][0].getX(), dungeonRoom[dungeonIndex][0].getY()+10, yellow);
+			dungeonRoom[dungeonIndex][2] = new DungeonRoom(dungeonRoom[dungeonIndex][0].getX()+10, dungeonRoom[dungeonIndex][0].getY(), yellow);
+			dungeonRoom[dungeonIndex][3] = new DungeonRoom(dungeonRoom[dungeonIndex][0].getX(), dungeonRoom[dungeonIndex][0].getY()-10, yellow);
+			dungeonRoom[dungeonIndex][4] = new DungeonRoom(dungeonRoom[dungeonIndex][0].getX()-10, dungeonRoom[dungeonIndex][0].getY(), yellow);
+			for(int b = 1; b < dungeonRoom[dungeonIndex].length; b++) {
+				if(dungeonIndex > 0) {
+					checkChunk(dungeonRoom, dungeonRoom[dungeonIndex][b]);
+				}
+				checkXY(dungeonRoom[dungeonIndex][b]);
+			}
+			nextRoomXY = FindNextRoomLocation(dungeonRoom[dungeonIndex]);
+		}
+	}
+	
+	private static void checkChunk(DungeonRoom[][] dungeonRooms, DungeonRoom dungeonRoom) {
+		for(int i = 0; i < dungeonIndex; i++) {
+			for(int j = 0; j < dungeonRooms[i].length; j++) {
+				if(dungeonRoom.getX() == dungeonRooms[i][j].getX() && dungeonRoom.getY() == dungeonRooms[i][j].getY()) {
+					dungeonRoom.setIsNotSuitable();
+				}
+			}
+		}
+	}
+	
+	public static void checkXY(DungeonRoom dungeonRoom) {
+		if (dungeonRoom.getX() < 0 || dungeonRoom.getX() > 100){
+			dungeonRoom.setIsNotSuitable();
+			return;
+		}
+		if (dungeonRoom.getY() < 0 || dungeonRoom.getY() > 100){
+			dungeonRoom.setIsNotSuitable();
+			return;
+		}
+
+	}
+	
+	public static int[] FindNextRoomLocation(DungeonRoom[] dungeonRooms) {
+		boolean foundNextLocation = false;
+		int[] nextRoomXY = {0, 0};
+		while(!foundNextLocation) {
+			double randomNumber = Math.random();
+			if(randomNumber < 0.25 && dungeonRooms[1].getIsSuitable()) {
+				nextRoomXY[0] = dungeonRooms[1].getX();
+				nextRoomXY[1] = dungeonRooms[1].getY();
+     			foundNextLocation = true;
+			} 
+			if(randomNumber > 0.25 && randomNumber < 0.5 && dungeonRooms[2].getIsSuitable()) {
+				nextRoomXY[0] = dungeonRooms[2].getX();
+				nextRoomXY[1] = dungeonRooms[2].getY();
+				foundNextLocation = true;
+			}
+			if(randomNumber > 0.5 && randomNumber < 0.75 && dungeonRooms[3].getIsSuitable()) {
+				nextRoomXY[0] = dungeonRooms[3].getX();
+				nextRoomXY[1] = dungeonRooms[3].getY();
+				foundNextLocation = true;
+			}
+			if(randomNumber > 0.75 && dungeonRooms[4].getIsSuitable()) {	
+				nextRoomXY[0] = dungeonRooms[4].getX();
+				nextRoomXY[1] = dungeonRooms[4].getY();	
+				foundNextLocation = true;
+			}
+		}
+		return nextRoomXY;
+	}
 	public static void startGame(DungeonRoom[][] dungeonRooms) {
 		boolean isRunning = true;		
 		Scanner scanner = new Scanner(System.in);
@@ -210,100 +305,5 @@ public class DungeonCrawler {
 			}
 			
 		}	
-	}
-	
-	public static int diceRoll() {
-		int dice = 1;
-		int time = 25;
-		int tries = 100;
-		
-		for(int i = 0; i < 3; i++) {
-			for(int j = 0; j < tries; j++) {
-				try {
-					dice = (int)(Math.random() * 6) + 1;
-					GameLogic.clearConsole();
-					System.out.println(dice);
-					Thread.sleep(time);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			time = time * 5;
-			tries = tries / 5;
-		}
-		GameLogic.clearConsole();
-		return dice;
-	}
-	
-	public static void generate(DungeonRoom[][] dungeonRoom) {
-		int[] nextRoomXY = {55, 55};
-		for(dungeonIndex = 0; dungeonIndex < dungeonRoom.length; dungeonIndex++) {
-			dungeonRoom[dungeonIndex][0] = new DungeonRoom(nextRoomXY[0], nextRoomXY[1], red);
-			dungeonRoom[dungeonIndex][0].setIsNotSuitable();
-			dungeonRoom[dungeonIndex][0].draw();
-			StdDraw.show(500);
-			dungeonRoom[dungeonIndex][1] = new DungeonRoom(dungeonRoom[dungeonIndex][0].getX(), dungeonRoom[dungeonIndex][0].getY()+10, yellow);
-			dungeonRoom[dungeonIndex][2] = new DungeonRoom(dungeonRoom[dungeonIndex][0].getX()+10, dungeonRoom[dungeonIndex][0].getY(), yellow);
-			dungeonRoom[dungeonIndex][3] = new DungeonRoom(dungeonRoom[dungeonIndex][0].getX(), dungeonRoom[dungeonIndex][0].getY()-10, yellow);
-			dungeonRoom[dungeonIndex][4] = new DungeonRoom(dungeonRoom[dungeonIndex][0].getX()-10, dungeonRoom[dungeonIndex][0].getY(), yellow);
-			for(int b = 1; b < dungeonRoom[dungeonIndex].length; b++) {
-				if(dungeonIndex > 0) {
-					checkChunk(dungeonRoom, dungeonRoom[dungeonIndex][b]);
-				}
-				checkXY(dungeonRoom[dungeonIndex][b]);
-			}
-			nextRoomXY = FindNextRoomLocation(dungeonRoom[dungeonIndex]);
-		}
-	}
-	
-	private static void checkChunk(DungeonRoom[][] dungeonRooms, DungeonRoom dungeonRoom) {
-		for(int i = 0; i < dungeonIndex; i++) {
-			for(int j = 0; j < dungeonRooms[i].length; j++) {
-				if(dungeonRoom.getX() == dungeonRooms[i][j].getX() && dungeonRoom.getY() == dungeonRooms[i][j].getY()) {
-					dungeonRoom.setIsNotSuitable();
-				}
-			}
-		}
-	}
-	
-	public static void checkXY(DungeonRoom dungeonRoom) {
-		if (dungeonRoom.getX() < 0 || dungeonRoom.getX() > 100){
-			dungeonRoom.setIsNotSuitable();
-			return;
-		}
-		if (dungeonRoom.getY() < 0 || dungeonRoom.getY() > 100){
-			dungeonRoom.setIsNotSuitable();
-			return;
-		}
-
-	}
-	
-	public static int[] FindNextRoomLocation(DungeonRoom[] dungeonRooms) {
-		boolean foundNextLocation = false;
-		int[] nextRoomXY = {0, 0};
-		while(!foundNextLocation) {
-			double randomNumber = Math.random();
-			if(randomNumber < 0.25 && dungeonRooms[1].getIsSuitable()) {
-				nextRoomXY[0] = dungeonRooms[1].getX();
-				nextRoomXY[1] = dungeonRooms[1].getY();
-     			foundNextLocation = true;
-			} 
-			if(randomNumber > 0.25 && randomNumber < 0.5 && dungeonRooms[2].getIsSuitable()) {
-				nextRoomXY[0] = dungeonRooms[2].getX();
-				nextRoomXY[1] = dungeonRooms[2].getY();
-				foundNextLocation = true;
-			}
-			if(randomNumber > 0.5 && randomNumber < 0.75 && dungeonRooms[3].getIsSuitable()) {
-				nextRoomXY[0] = dungeonRooms[3].getX();
-				nextRoomXY[1] = dungeonRooms[3].getY();
-				foundNextLocation = true;
-			}
-			if(randomNumber > 0.75 && dungeonRooms[4].getIsSuitable()) {	
-				nextRoomXY[0] = dungeonRooms[4].getX();
-				nextRoomXY[1] = dungeonRooms[4].getY();	
-				foundNextLocation = true;
-			}
-		}
-		return nextRoomXY;
 	}
 }
