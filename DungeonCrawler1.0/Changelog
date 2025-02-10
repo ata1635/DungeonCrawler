@@ -1,6 +1,0 @@
-- Diagnostics wie System.out.println();, welche an bestimmten stellen zum überprüfen des codes benutzt wurden, wurden entfernt.
-
-- Das Gameplay wurde hinzugefügt.
-
-- DungeonRoom-farben ändern sich nun, wenn man im Raum ist (blau) oder den Raum verlässt (grün).
-    - Der Goblinraum bleibt rot wenn man ihn nicht besiegt.
